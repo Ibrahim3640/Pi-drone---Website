@@ -3,16 +3,23 @@ from django.shortcuts import redirect, render
 
 from .forms import FlightDataForm
 from .models import FlightData
+from .utils import build_conditions_summary, get_time_period, wind_speed_to_kmh
 
 
 def flight_data_list(request):
-	flight_data = FlightData.objects.all()
+	flight_data = list(FlightData.objects.all())
+	for record in flight_data:
+		record.time_period_label = get_time_period(record.timestamp)
+		record.wind_speed_kmh = wind_speed_to_kmh(record.wind_speed)
+
+	conditions_summary = build_conditions_summary(flight_data)
 
 	return render(
 		request,
 		"flight_monitoring/flight_logs.html",
 		{
 			"flight_data": flight_data,
+			"conditions_summary": conditions_summary,
 		},
 	)
 
@@ -28,6 +35,8 @@ def dashboard(request):
 		form = FlightDataForm()
 
 	latest_reading = FlightData.objects.first()
+	if latest_reading:
+		latest_reading.wind_speed_kmh = wind_speed_to_kmh(latest_reading.wind_speed)
 
 	return render(
 		request,

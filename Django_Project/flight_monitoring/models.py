@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 
+from .utils import calculate_flight_safety_status
+
 
 class FlightData(models.Model):
 	SAFE = "Safe"
@@ -28,15 +30,11 @@ class FlightData(models.Model):
 		ordering = ["-timestamp"]
 
 	def calculate_safety_rating(self):
-		wind_speed = float(self.wind_speed)
-		humidity = float(self.humidity)
-		altitude = float(self.altitude)
-
-		if wind_speed > 20 or humidity > 90 or altitude > 200:
-			return self.DANGEROUS
-		if wind_speed > 12 or humidity > 75 or altitude > 120:
-			return self.CAUTION
-		return self.SAFE
+		return calculate_flight_safety_status(
+			self.wind_speed,
+			self.humidity,
+			self.altitude,
+		)
 
 	def save(self, *args, **kwargs):
 		self.safety_rating = self.calculate_safety_rating()
