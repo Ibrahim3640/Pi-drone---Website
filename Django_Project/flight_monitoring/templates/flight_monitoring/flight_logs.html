@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Flight History | Drone Flight Safety Monitor</title>
+    <title>Flight History | Drone Conditions Database</title>
     <script>(function(){if(localStorage.getItem("theme")==="dark"){document.documentElement.setAttribute("data-theme","dark");}}());</script>
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
     <link rel="stylesheet" href="{% static 'css/flight_history.css' %}">
 </head>
 <body class="history-page">
     <header class="site-header">
-        <span class="site-header__title">Drone Flight Safety Monitor</span>
+        <span class="site-header__title">Drone Conditions Database</span>
         <button class="theme-toggle" onclick="toggleDarkMode()" id="themeToggle">&#9790; Dark Mode</button>
     </header>
     <nav class="site-nav">
@@ -24,17 +24,54 @@
             <button type="button" class="logout-btn" onclick="this.closest('form').submit()">Logout</button>
         </form>
     </nav>
-    <main>
+    <main class="history-layout">
         <section class="panel">
-            <p class="eyebrow">Flight Monitoring</p>
-            <h1>Flight History</h1>
-            <p>Saved drone flights are listed below with their telemetry and safety status.</p>
-            <span class="caption">Database-backed flight history</span>
+            <p class="eyebrow">Pattern Summary</p>
+            <h1>Drone Conditions Database</h1>
+            <p>Saved readings are grouped by altitude and time of day so drone users can spot when local conditions are usually calm and when they become risky.</p>
+            <span class="caption">Trend summaries are calculated from the timestamped readings stored in the local database.</span>
+            {% if conditions_summary %}
+                <div class="pattern-grid">
+                    {% for summary in conditions_summary %}
+                        <article class="pattern-card">
+                            <div class="pattern-card__header">
+                                <div>
+                                    <h2>Average wind speed at {{ summary.altitude_label }} altitude</h2>
+                                    <p>{{ summary.total_readings }} logged readings</p>
+                                </div>
+                            </div>
+                            <div class="pattern-list">
+                                {% for period in summary.periods %}
+                                    <div class="pattern-row">
+                                        <div class="pattern-row__time">
+                                            <strong>{{ period.label }}</strong>
+                                            <span>{{ period.sample_count }} readings</span>
+                                        </div>
+                                        <div class="pattern-row__metrics">
+                                            <strong>{{ period.avg_wind_speed_kmh|floatformat:1 }} km/h</strong>
+                                            <span>{{ period.avg_wind_speed_mps|floatformat:1 }} m/s avg wind | {{ period.avg_humidity|floatformat:0 }}% avg humidity</span>
+                                        </div>
+                                        <span class="badge {% if period.safety_rating == 'Safe' %}badge--safe{% elif period.safety_rating == 'Caution' %}badge--caution{% else %}badge--dangerous{% endif %}">{{ period.safety_rating }}</span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="empty-state">No saved readings are available yet, so there are no local patterns to show.</p>
+            {% endif %}
+        </section>
+        <section class="panel">
+            <p class="eyebrow">Recorded Logs</p>
+            <h2>Timestamped readings</h2>
+            <p>Each saved reading still appears below so you can review the exact conditions that built the pattern summaries.</p>
             {% if flight_data %}
                 <table>
                     <thead>
                         <tr>
                             <th>Timestamp</th>
+                            <th>Time of Day</th>
                             <th>Wind Speed</th>
                             <th>Humidity</th>
                             <th>Altitude</th>
@@ -45,7 +82,8 @@
                         {% for item in flight_data %}
                             <tr>
                                 <td>{{ item.timestamp|date:"Y-m-d H:i:s" }}</td>
-                                <td>{{ item.wind_speed }} m/s</td>
+                                <td>{{ item.time_period_label }}</td>
+                                <td>{{ item.wind_speed_kmh|floatformat:1 }} km/h <span class="table-subvalue">({{ item.wind_speed }} m/s)</span></td>
                                 <td>{{ item.humidity }}%</td>
                                 <td>{{ item.altitude }} m</td>
                                 <td>

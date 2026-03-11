@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Drone Flight Safety Monitor</title>
+    <title>Drone Conditions Database</title>
     <script>(function(){if(localStorage.getItem("theme")==="dark"){document.documentElement.setAttribute("data-theme","dark");}}());</script>
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
 </head>
 <body>
     <header class="site-header">
-        <span class="site-header__title">Drone Flight Safety Monitor</span>
+        <span class="site-header__title">Drone Conditions Database</span>
         <button class="theme-toggle" onclick="toggleDarkMode()" id="themeToggle">&#9790; Dark Mode</button>
     </header>
     <nav class="site-nav">
@@ -27,12 +27,12 @@
         <section class="hero">
             <div class="panel">
                 <p class="eyebrow">Latest Reading</p>
-                <h1>Drone Flight Safety Monitor</h1>
-                <p>Track wind speed, humidity, and altitude for each drone telemetry update. View full history on the Flight History page.</p>
+                <h1>Drone Conditions Database</h1>
+                <p>Log local wind, humidity, altitude, and time to build a database of flight conditions in your area. Each entry is stored with a timestamp and rated as Safe, Caution, or Dangerous.</p>
                 <div class="summary-grid">
                     <div class="stat">
                         <span>Wind speed</span>
-                        <strong>{% if latest_reading %}{{ latest_reading.wind_speed }} m/s{% else %}--{% endif %}</strong>
+                        <strong>{% if latest_reading %}{{ latest_reading.wind_speed_kmh|floatformat:1 }} km/h{% else %}--{% endif %}</strong>
                     </div>
                     <div class="stat">
                         <span>Humidity</span>
@@ -56,11 +56,16 @@
                             <strong>--</strong>
                         {% endif %}
                     </div>
+                    <div class="stat">
+                        <span>Logged at</span>
+                        <strong>{% if latest_reading %}{{ latest_reading.timestamp|date:"d M Y H:i" }}{% else %}--{% endif %}</strong>
+                    </div>
                 </div>
             </div>
             <div class="panel">
                 <p class="eyebrow">New Reading</p>
-                <h2>Store telemetry data</h2>
+                <h2>Store a timestamped reading</h2>
+                <p class="form-note">Use this form to add a local conditions reading that can be compared with other times of day on the Flight History page.</p>
                 <form method="post">
                     {% csrf_token %}
                     <div class="form-grid">

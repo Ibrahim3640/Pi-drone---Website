@@ -37,8 +37,11 @@ body {
     color: var(--header-ink);
     padding: 0.85rem 1.5rem;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 0.7rem;
+    text-align: center;
 }
 .site-header__title { font-size: 1.1rem; font-weight: 700; margin: 0; }
 .theme-toggle {
@@ -56,6 +59,8 @@ body {
     background: var(--nav-bg);
     display: flex;
     align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
     gap: 0.3rem;
     padding: 0.5rem 1.5rem;
     border-bottom: 1px solid var(--border);
@@ -70,7 +75,7 @@ body {
     transition: background 0.15s, color 0.15s;
 }
 .site-nav a:hover, .site-nav a.active { background: var(--accent); color: #fff; }
-.site-nav .spacer { flex: 1; }
+.site-nav .spacer { display: none; }
 .site-nav .logout-btn {
     border: 1px solid var(--border);
     background: transparent;
@@ -88,6 +93,10 @@ main {
     padding: 2rem 0 3rem;
 }
 h1, h2, p { margin-top: 0; }
+.form-note {
+    color: var(--muted);
+    margin-bottom: 0;
+}
 .hero {
     display: grid;
     gap: 1.5rem;
