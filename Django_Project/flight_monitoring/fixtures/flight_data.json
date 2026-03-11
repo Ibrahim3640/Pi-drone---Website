@@ -1,0 +1,22 @@
+[
+  {"model": "flight_monitoring.flightdata", "pk": 3001, "fields": {"wind_speed": "5.20", "humidity": "42.00", "altitude": "35.00", "timestamp": "2026-03-10T08:00:00Z", "safety_rating": "Safe"}},
+  {"model": "flight_monitoring.flightdata", "pk": 3002, "fields": {"wind_speed": "6.80", "humidity": "48.00", "altitude": "40.00", "timestamp": "2026-03-10T08:05:00Z", "safety_rating": "Safe"}},
+  {"model": "flight_monitoring.flightdata", "pk": 3003, "fields": {"wind_speed": "8.40", "humidity": "54.00", "altitude": "50.00", "timestamp": "2026-03-10T08:10:00Z", "safety_rating": "Safe"}},
+  {"model": "flight_monitoring.flightdata", "pk": 3004, "fields": {"wind_speed": "9.10", "humidity": "60.00", "altitude": "65.00", "timestamp": "2026-03-10T08:15:00Z", "safety_rating": "Safe"}},
+  {"model": "flight_monitoring.flightdata", "pk": 3005, "fields": {"wind_speed": "10.50", "humidity": "68.00", "altitude": "75.00", "timestamp": "2026-03-10T08:20:00Z", "safety_rating": "Safe"}},
+  {"model": "flight_monitoring.flightdata", "pk": 3006, "fields": {"wind_speed": "11.90", "humidity": "72.00", "altitude": "82.00", "timestamp": "2026-03-10T08:25:00Z", "safety_rating": "Safe"}},
+  {"model": "flight_monitoring.flightdata", "pk": 3007, "fields": {"wind_speed": "12.40", "humidity": "74.00", "altitude": "90.00", "timestamp": "2026-03-10T08:30:00Z", "safety_rating": "Caution"}},
+  {"model": "flight_monitoring.flightdata", "pk": 3008, "fields": {"wind_speed": "13.10", "humidity": "76.00", "altitude": "96.00", "timestamp": "2026-03-10T08:35:00Z", "safety_rating": "Caution"}},
+  {"model": "flight_monitoring.flightdata", "pk": 3009, "fields": {"wind_speed": "14.60", "humidity": "78.00", "altitude": "105.00", "timestamp": "2026-03-10T08:40:00Z", "safety_rating": "Caution"}},
+  {"model": "flight_monitoring.flightdata", "pk": 3010, "fields": {"wind_speed": "15.20", "humidity": "80.00", "altitude": "115.00", "timestamp": "2026-03-10T08:45:00Z", "safety_rating": "Caution"}},
+  {"model": "flight_monitoring.flightdata", "pk": 3011, "fields": {"wind_speed": "16.00", "humidity": "83.00", "altitude": "125.00", "timestamp": "2026-03-10T08:50:00Z", "safety_rating": "Caution"}},
+  {"model": "flight_monitoring.flightdata", "pk": 3012, "fields": {"wind_speed": "17.40", "humidity": "85.00", "altitude": "135.00", "timestamp": "2026-03-10T08:55:00Z", "safety_rating": "Caution"}},
+  {"model": "flight_monitoring.flightdata", "pk": 3013, "fields": {"wind_speed": "18.60", "humidity": "88.00", "altitude": "145.00", "timestamp": "2026-03-10T09:00:00Z", "safety_rating": "Caution"}},
+  {"model": "flight_monitoring.flightdata", "pk": 3014, "fields": {"wind_speed": "19.90", "humidity": "89.00", "altitude": "155.00", "timestamp": "2026-03-10T09:05:00Z", "safety_rating": "Caution"}},
+  {"model": "flight_monitoring.flightdata", "pk": 3015, "fields": {"wind_speed": "20.30", "humidity": "91.00", "altitude": "165.00", "timestamp": "2026-03-10T09:10:00Z", "safety_rating": "Dangerous"}},
+  {"model": "flight_monitoring.flightdata", "pk": 3016, "fields": {"wind_speed": "21.50", "humidity": "92.00", "altitude": "175.00", "timestamp": "2026-03-10T09:15:00Z", "safety_rating": "Dangerous"}},
+  {"model": "flight_monitoring.flightdata", "pk": 3017, "fields": {"wind_speed": "22.70", "humidity": "94.00", "altitude": "185.00", "timestamp": "2026-03-10T09:20:00Z", "safety_rating": "Dangerous"}},
+  {"model": "flight_monitoring.flightdata", "pk": 3018, "fields": {"wind_speed": "23.80", "humidity": "95.00", "altitude": "195.00", "timestamp": "2026-03-10T09:25:00Z", "safety_rating": "Dangerous"}},
+  {"model": "flight_monitoring.flightdata", "pk": 3019, "fields": {"wind_speed": "24.90", "humidity": "96.00", "altitude": "205.00", "timestamp": "2026-03-10T09:30:00Z", "safety_rating": "Dangerous"}},
+  {"model": "flight_monitoring.flightdata", "pk": 3020, "fields": {"wind_speed": "26.10", "humidity": "98.00", "altitude": "220.00", "timestamp": "2026-03-10T09:35:00Z", "safety_rating": "Dangerous"}}
+]
