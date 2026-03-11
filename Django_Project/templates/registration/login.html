@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | Drone Flight Safety</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+<body>
+    <section class="card">
+        <p class="eyebrow">Authentication</p>
+        <h1>Drone Dashboard Login</h1>
+        <p>Sign in to access the protected dashboard and telemetry tools.</p>
+        {% if form.errors %}
+            <p class="auth-error">Invalid username or password. Please try again.</p>
+        {% endif %}
+        {% if next %}
+            <p class="auth-error">Please login to continue.</p>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div>
+                <label for="id_username">Username</label>
+                {{ form.username }}
+                {{ form.username.errors }}
+            </div>
+            <div>
+                <label for="id_password">Password</label>
+                {{ form.password }}
+                {{ form.password.errors }}
+            </div>
+            <button type="submit">Login</button>
+            <input type="hidden" name="next" value="{{ next }}" />
+        </form>
+    </section>
+</body>
+</html>

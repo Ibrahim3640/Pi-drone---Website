@@ -1,11 +1,105 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pi Drone</title>
+    <title>Drone Flight Safety Monitor</title>
+    <script>(function(){if(localStorage.getItem("theme")==="dark"){document.documentElement.setAttribute("data-theme","dark");}}());</script>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
 </head>
 <body>
-    <h1>Welcome to Pi Drone</h1>
+    <header class="site-header">
+        <span class="site-header__title">Drone Flight Safety Monitor</span>
+        <button class="theme-toggle" onclick="toggleDarkMode()" id="themeToggle">&#9790; Dark Mode</button>
+    </header>
+    <nav class="site-nav">
+        <a href="{% url 'flight_monitoring:dashboard' %}" class="active">Dashboard</a>
+        <a href="{% url 'flight_monitoring:flight_data_list' %}">Flight History</a>
+        <a href="{% url 'admin:index' %}">Admin</a>
+        <span class="spacer"></span>
+        <form action="{% url 'logout' %}" method="post" style="margin:0">
+            {% csrf_token %}
+            <button type="button" class="logout-btn" onclick="this.closest('form').submit()">Logout</button>
+        </form>
+    </nav>
+    <main>
+        <section class="hero">
+            <div class="panel">
+                <p class="eyebrow">Latest Reading</p>
+                <h1>Drone Flight Safety Monitor</h1>
+                <p>Track wind speed, humidity, and altitude for each drone telemetry update. View full history on the Flight History page.</p>
+                <div class="summary-grid">
+                    <div class="stat">
+                        <span>Wind speed</span>
+                        <strong>{% if latest_reading %}{{ latest_reading.wind_speed }} m/s{% else %}--{% endif %}</strong>
+                    </div>
+                    <div class="stat">
+                        <span>Humidity</span>
+                        <strong>{% if latest_reading %}{{ latest_reading.humidity }}%{% else %}--{% endif %}</strong>
+                    </div>
+                    <div class="stat">
+                        <span>Altitude</span>
+                        <strong>{% if latest_reading %}{{ latest_reading.altitude }} m{% else %}--{% endif %}</strong>
+                    </div>
+                    <div class="stat">
+                        <span>Safety status</span>
+                        {% if latest_reading %}
+                            {% if latest_reading.safety_rating == "Safe" %}
+                                <span class="badge badge--safe">Safe</span>
+                            {% elif latest_reading.safety_rating == "Caution" %}
+                                <span class="badge badge--caution">Caution</span>
+                            {% else %}
+                                <span class="badge badge--dangerous">Dangerous</span>
+                            {% endif %}
+                        {% else %}
+                            <strong>--</strong>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="panel">
+                <p class="eyebrow">New Reading</p>
+                <h2>Store telemetry data</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-grid">
+                        <div>
+                            <label for="{{ form.wind_speed.id_for_label }}">Wind speed (m/s)</label>
+                            {{ form.wind_speed }}
+                            {{ form.wind_speed.errors }}
+                        </div>
+                        <div>
+                            <label for="{{ form.humidity.id_for_label }}">Humidity (%)</label>
+                            {{ form.humidity }}
+                            {{ form.humidity.errors }}
+                        </div>
+                        <div>
+                            <label for="{{ form.altitude.id_for_label }}">Altitude (m)</label>
+                            {{ form.altitude }}
+                            {{ form.altitude.errors }}
+                        </div>
+                        <div>
+                            <label for="{{ form.timestamp.id_for_label }}">Timestamp</label>
+                            {{ form.timestamp }}
+                            {{ form.timestamp.errors }}
+                        </div>
+                    </div>
+                    <button type="submit">Save reading</button>
+                </form>
+            </div>
+        </section>
+    </main>
+    <script>
+        function toggleDarkMode() {
+            const dark = document.documentElement.getAttribute("data-theme") === "dark";
+            document.documentElement.setAttribute("data-theme", dark ? "" : "dark");
+            localStorage.setItem("theme", dark ? "light" : "dark");
+            document.getElementById("themeToggle").textContent = dark ? "\u263D Dark Mode" : "\u2600\uFE0F Light Mode";
+        }
+        if (document.documentElement.getAttribute("data-theme") === "dark") {
+            document.getElementById("themeToggle").textContent = "\u2600\uFE0F Light Mode";
+        }
+    </script>
 </body>
 </html>

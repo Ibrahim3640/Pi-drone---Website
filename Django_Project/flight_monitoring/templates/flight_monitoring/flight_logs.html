@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flight History | Drone Flight Safety Monitor</title>
+    <script>(function(){if(localStorage.getItem("theme")==="dark"){document.documentElement.setAttribute("data-theme","dark");}}());</script>
+    <style>
+        :root {
+            --bg: #eef4f6;
+            --panel: #ffffff;
+            --ink: #102a43;
+            --muted: #627d98;
+            --accent: #0b7285;
+            --accent-soft: #d8f3f7;
+            --border: #d9e2ec;
+            --header-bg: #0b7285;
+            --header-ink: #ffffff;
+            --nav-bg: #e4f2f5;
+            --nav-ink: #0b7285;
+        }
+        [data-theme="dark"] {
+            --bg: #0d1b24;
+            --panel: #132232;
+            --ink: #ddeaf5;
+            --muted: #7aaabe;
+            --accent: #3ecfdf;
+            --accent-soft: #0d2b36;
+            --border: #1d3545;
+            --header-bg: #091824;
+            --header-ink: #ddeaf5;
+            --nav-bg: #0f2434;
+            --nav-ink: #3ecfdf;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Segoe UI", sans-serif;
+            color: var(--ink);
+            background: var(--bg);
+            transition: background 0.2s, color 0.2s;
+        }
+        /* ── Header ── */
+        .site-header {
+            background: var(--header-bg);
+            color: var(--header-ink);
+            padding: 0.85rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .site-header__title { font-size: 1.1rem; font-weight: 700; margin: 0; }
+        .theme-toggle {
+            border: 1px solid rgba(255,255,255,0.35);
+            background: rgba(255,255,255,0.1);
+            color: inherit;
+            padding: 0.4rem 0.9rem;
+            border-radius: 999px;
+            cursor: pointer;
+            font: inherit;
+            font-size: 0.88rem;
+        }
+        .theme-toggle:hover { background: rgba(255,255,255,0.22); }
+        /* ── Nav ── */
+        .site-nav {
+            background: var(--nav-bg);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.5rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .site-nav a {
+            text-decoration: none;
+            color: var(--nav-ink);
+            font-weight: 600;
+            font-size: 0.88rem;
+            padding: 0.4rem 0.9rem;
+            border-radius: 999px;
+            transition: background 0.15s, color 0.15s;
+        }
+        .site-nav a:hover, .site-nav a.active { background: var(--accent); color: #fff; }
+        .site-nav .spacer { flex: 1; }
+        .site-nav .logout-btn {
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--ink);
+            padding: 0.35rem 0.9rem;
+            border-radius: 999px;
+            font: inherit;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        .site-nav .logout-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+        /* ── Layout ── */
+        main {
+            width: min(1100px, calc(100% - 2rem));
+            margin: 0 auto;
+            padding: 2rem 0 3rem;
+        }
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 1.5rem;
+            box-shadow: 0 18px 40px rgba(16,42,67,0.08);
+        }
+        [data-theme="dark"] .panel { box-shadow: 0 18px 40px rgba(0,0,0,0.35); }
+        .eyebrow {
+            margin: 0 0 0.75rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--accent);
+            font-weight: 700;
+        }
+        h1 { margin: 0 0 0.75rem; }
+        p { margin: 0 0 1.25rem; color: var(--muted); }
+        .caption {
+            display: inline-block;
+            margin-bottom: 1rem;
+            padding: 0.45rem 0.8rem;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        .chart-panel {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            background: var(--accent-soft);
+        }
+        .chart-title { margin: 0 0 0.4rem; font-size: 1rem; font-weight: 700; }
+        .chart-note { margin: 0 0 1rem; font-size: 0.92rem; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td {
+            text-align: left;
+            padding: 0.95rem 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+        }
+        /* ── Safety badges ── */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        .badge--safe      { background: #d1fae5; color: #065f46; }
+        .badge--caution   { background: #fef3c7; color: #92400e; }
+        .badge--dangerous { background: #fee2e2; color: #991b1b; }
+        [data-theme="dark"] .badge--safe      { background: #064e3b; color: #6ee7b7; }
+        [data-theme="dark"] .badge--caution   { background: #78350f; color: #fde68a; }
+        [data-theme="dark"] .badge--dangerous { background: #7f1d1d; color: #fca5a5; }
+        .empty-state { color: var(--muted); }
+        @media (max-width: 720px) {
+            main { width: min(100% - 1rem, 100%); }
+            .panel { padding: 1.2rem; }
+            th, td { padding-inline: 0.4rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <span class="site-header__title">Drone Flight Safety Monitor</span>
+        <button class="theme-toggle" onclick="toggleDarkMode()" id="themeToggle">&#9790; Dark Mode</button>
+    </header>
+    <nav class="site-nav">
+        <a href="{% url 'flight_monitoring:dashboard' %}">Dashboard</a>
+        <a href="{% url 'flight_monitoring:flight_data_list' %}" class="active">Flight History</a>
+        <a href="{% url 'admin:index' %}">Admin</a>
+        <span class="spacer"></span>
+        <form action="{% url 'logout' %}" method="post" style="margin:0">
+            {% csrf_token %}
+            <button type="button" class="logout-btn" onclick="this.closest('form').submit()">Logout</button>
+        </form>
+    </nav>
+    <main>
+        <section class="panel">
+            <p class="eyebrow">Flight Monitoring</p>
+            <h1>Flight History</h1>
+            <p>Saved drone flights are listed below with their telemetry and safety status.</p>
+            <span class="caption">Database-backed flight history</span>
+            <div class="chart-panel">
+                <h2 class="chart-title">Wind Speed and Humidity Trends</h2>
+                <p class="chart-note">Chart.js visualizes stored wind speed and humidity values from the Django database.</p>
+                <canvas id="flightMetricsChart"></canvas>
+            </div>
+            {% if flight_data %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Wind Speed</th>
+                            <th>Humidity</th>
+                            <th>Altitude</th>
+                            <th>Safety Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in flight_data %}
+                            <tr>
+                                <td>{{ item.timestamp|date:"Y-m-d H:i:s" }}</td>
+                                <td>{{ item.wind_speed }} m/s</td>
+                                <td>{{ item.humidity }}%</td>
+                                <td>{{ item.altitude }} m</td>
+                                <td>
+                                    {% if item.safety_rating == "Safe" %}
+                                        <span class="badge badge--safe">Safe</span>
+                                    {% elif item.safety_rating == "Caution" %}
+                                        <span class="badge badge--caution">Caution</span>
+                                    {% else %}
+                                        <span class="badge badge--dangerous">Dangerous</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="empty-state">No flight logs are available yet.</p>
+            {% endif %}
+        </section>
+    </main>
+    {{ chart_labels|json_script:"chart-labels" }}
+    {{ wind_speed_data|json_script:"wind-speed-data" }}
+    {{ humidity_data|json_script:"humidity-data" }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const chartLabels = JSON.parse(document.getElementById("chart-labels").textContent);
+        const windSpeedData = JSON.parse(document.getElementById("wind-speed-data").textContent);
+        const humidityData = JSON.parse(document.getElementById("humidity-data").textContent);
+        const chartCanvas = document.getElementById("flightMetricsChart");
+
+        if (chartCanvas) {
+            new Chart(chartCanvas, {
+                type: "line",
+                data: {
+                    labels: chartLabels,
+                    datasets: [
+                        {
+                            label: "Wind Speed (m/s)",
+                            data: windSpeedData,
+                            borderColor: "#0b7285",
+                            backgroundColor: "rgba(11, 114, 133, 0.16)",
+                            tension: 0.28,
+                            fill: true,
+                        },
+                        {
+                            label: "Humidity (%)",
+                            data: humidityData,
+                            borderColor: "#f08c00",
+                            backgroundColor: "rgba(240, 140, 0, 0.12)",
+                            tension: 0.28,
+                            fill: true,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                        },
+                    },
+                },
+            });
+        }
+    </script>
+    <script>
+        function toggleDarkMode() {
+            const dark = document.documentElement.getAttribute("data-theme") === "dark";
+            document.documentElement.setAttribute("data-theme", dark ? "" : "dark");
+            localStorage.setItem("theme", dark ? "light" : "dark");
+            document.getElementById("themeToggle").textContent = dark ? "\u263D Dark Mode" : "\u2600\uFE0F Light Mode";
+        }
+        if (document.documentElement.getAttribute("data-theme") === "dark") {
+            document.getElementById("themeToggle").textContent = "\u2600\uFE0F Light Mode";
+        }
+    </script>
+</body>
+</html>
