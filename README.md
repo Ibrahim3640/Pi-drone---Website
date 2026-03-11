@@ -1,4 +1,4 @@
-# Pi-drone---Website
+# Flight Saftey Monitor
 
 This repository contains a Django-based drone flight safety monitoring system.
 
