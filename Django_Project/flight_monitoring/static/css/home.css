@@ -131,6 +131,44 @@ h1, h2, p { margin-top: 0; }
 [data-theme="dark"] .badge--safe      { background: #064e3b; color: #6ee7b7; }
 [data-theme="dark"] .badge--caution   { background: #78350f; color: #fde68a; }
 [data-theme="dark"] .badge--dangerous { background: #7f1d1d; color: #fca5a5; }
+
+.caption {
+    display: inline-block;
+    margin-top: 0.35rem;
+    color: var(--muted);
+    font-size: 0.92rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+thead th {
+    text-align: left;
+    padding: 0.75rem;
+    background: var(--accent-soft);
+    border-bottom: 1px solid var(--border);
+}
+
+tbody td {
+    padding: 0.7rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+}
+
+tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.empty-state {
+    margin-top: 1rem;
+    color: var(--muted);
+}
+
 form { display: grid; gap: 1rem; }
 .form-grid {
     display: grid;

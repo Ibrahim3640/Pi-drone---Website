@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Flight History | Drone Flight Safety Monitor</title>
     <script>(function(){if(localStorage.getItem("theme")==="dark"){document.documentElement.setAttribute("data-theme","dark");}}());</script>
-    <link rel="stylesheet" href="{% static 'css/flight_logs.css' %}">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/flight_history.css' %}">
 </head>
-<body>
+<body class="history-page">
     <header class="site-header">
         <span class="site-header__title">Drone Flight Safety Monitor</span>
         <button class="theme-toggle" onclick="toggleDarkMode()" id="themeToggle">&#9790; Dark Mode</button>
@@ -29,11 +30,6 @@
             <h1>Flight History</h1>
             <p>Saved drone flights are listed below with their telemetry and safety status.</p>
             <span class="caption">Database-backed flight history</span>
-            <div class="chart-panel">
-                <h2 class="chart-title">Wind Speed and Humidity Trends</h2>
-                <p class="chart-note">Chart.js visualizes stored wind speed and humidity values from the Django database.</p>
-                <canvas id="flightMetricsChart"></canvas>
-            </div>
             {% if flight_data %}
                 <table>
                     <thead>
@@ -70,52 +66,6 @@
             {% endif %}
         </section>
     </main>
-    {{ chart_labels|json_script:"chart-labels" }}
-    {{ wind_speed_data|json_script:"wind-speed-data" }}
-    {{ humidity_data|json_script:"humidity-data" }}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        const chartLabels = JSON.parse(document.getElementById("chart-labels").textContent);
-        const windSpeedData = JSON.parse(document.getElementById("wind-speed-data").textContent);
-        const humidityData = JSON.parse(document.getElementById("humidity-data").textContent);
-        const chartCanvas = document.getElementById("flightMetricsChart");
-
-        if (chartCanvas) {
-            new Chart(chartCanvas, {
-                type: "line",
-                data: {
-                    labels: chartLabels,
-                    datasets: [
-                        {
-                            label: "Wind Speed (m/s)",
-                            data: windSpeedData,
-                            borderColor: "#0b7285",
-                            backgroundColor: "rgba(11, 114, 133, 0.16)",
-                            tension: 0.28,
-                            fill: true,
-                        },
-                        {
-                            label: "Humidity (%)",
-                            data: humidityData,
-                            borderColor: "#f08c00",
-                            backgroundColor: "rgba(240, 140, 0, 0.12)",
-                            tension: 0.28,
-                            fill: true,
-                        },
-                    ],
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                        },
-                    },
-                },
-            });
-        }
-    </script>
     <script>
         function toggleDarkMode() {
             const dark = document.documentElement.getAttribute("data-theme") === "dark";
