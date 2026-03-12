@@ -6,13 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Flight History | Drone Conditions Database</title>
     <script>(function(){if(localStorage.getItem("theme")==="dark"){document.documentElement.setAttribute("data-theme","dark");}}());</script>
-    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}?v=3">
     <link rel="stylesheet" href="{% static 'css/flight_history.css' %}">
 </head>
 <body class="history-page">
     <header class="site-header">
         <span class="site-header__title">Drone Conditions Database</span>
-        <button class="theme-toggle" onclick="toggleDarkMode()" id="themeToggle">&#9790; Dark Mode</button>
+        <button class="theme-toggle header-theme-toggle" onclick="toggleDarkMode()" id="themeToggle">&#9790; Dark Mode</button>
     </header>
     <nav class="site-nav">
         <a href="{% url 'flight_monitoring:dashboard' %}">Dashboard</a>
