@@ -16,6 +16,22 @@ The `FlightData` model stores:
 - timestamp
 - a calculated safety rating
 
+## Pi data ingestion
+
+The dashboard now accepts direct telemetry writes from a Raspberry Pi through a JSON endpoint at `/api/flight-data/ingest/`.
+
+Send `wind_speed`, `humidity`, `altitude`, and an optional ISO 8601 `timestamp`.
+
+Example:
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/flight-data/ingest/ \
+	-H "Content-Type: application/json" \
+	-d '{"wind_speed": 6.4, "humidity": 52.1, "altitude": 84.0, "timestamp": "2026-05-05T12:30:00Z"}'
+```
+
+The dashboard polls `/api/flight-data/latest/` every few seconds so the latest values update without a manual refresh.
+
 ## How the safety reading is predicted
 
 Each submitted reading is checked against simple threshold rules:
@@ -42,3 +58,12 @@ From `Django_Project`:
 ```
 
 The home page provides a simple dashboard for entering readings and reviewing the latest 10 saved records. The Django admin also includes the flight readings model for management tasks.
+
+## Default login
+
+For local development, the app creates a default admin account after migrations run:
+
+- username: `admin`
+- password: `admin`
+
+Use this only for local testing.
