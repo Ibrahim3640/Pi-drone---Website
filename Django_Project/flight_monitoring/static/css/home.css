@@ -97,9 +97,9 @@ body {
 }
 .site-nav .logout-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
 main {
-    width: min(1100px, calc(100% - 2rem));
+    width: min(1280px, calc(100% - 3rem));
     margin: 0 auto;
-    padding: 2rem 0 3rem;
+    padding: 2.5rem 0 4rem;
 }
 h1, h2, p { margin-top: 0; }
 .form-note {
@@ -109,15 +109,15 @@ h1, h2, p { margin-top: 0; }
 .hero {
     display: grid;
     gap: 1.5rem;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: 2fr 1fr;
     align-items: stretch;
 }
 .panel {
-    background: var(--panel);
+    background: linear-gradient(180deg, var(--panel), #f8fdff);
     border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 1.5rem;
-    box-shadow: 0 18px 40px rgba(16,42,67,0.08);
+    border-radius: 16px;
+    padding: 1.75rem;
+    box-shadow: 0 20px 50px rgba(16,42,67,0.08);
 }
 [data-theme="dark"] .panel { box-shadow: 0 18px 40px rgba(0,0,0,0.35); }
 .eyebrow {
@@ -131,10 +131,10 @@ h1, h2, p { margin-top: 0; }
 .summary-grid {
     display: grid;
     gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
 }
-.stat { border-radius: 16px; background: var(--accent-soft); padding: 1rem; }
-.stat strong { display: block; font-size: 1.4rem; margin-top: 0.3rem; }
+.stat { border-radius: 12px; background: var(--accent-soft); padding: 1.25rem; }
+.stat strong { display: block; font-size: 1.6rem; margin-top: 0.3rem; }
 .badge {
     display: inline-block;
     margin-top: 0.35rem;
@@ -231,3 +231,6 @@ button[type="submit"] {
     main { width: min(100% - 1rem, 100%); }
     .panel { padding: 1.2rem; }
 }
+
+/* Drone visualization */
+.drone-legend { color: var(--muted); font-size: 0.95rem; }

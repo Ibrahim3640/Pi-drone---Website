@@ -15,7 +15,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "flight_monitoring",
+    "flight_monitoring.apps.FlightMonitoringConfig",
 ]
 
 MIDDLEWARE = [
