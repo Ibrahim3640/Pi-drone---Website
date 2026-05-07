@@ -1,7 +1,8 @@
 import json
+from datetime import timedelta
 
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
@@ -9,8 +10,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 from .forms import FlightDataForm
-from .models import FlightData
+from .models import FlightData, FlightSession
 from .utils import build_conditions_summary, get_time_period, wind_speed_to_kmh
+
+
+FLIGHT_SESSION_GAP = timedelta(seconds=15)
 
 
 def _serialize_flight_data(record):
@@ -50,6 +54,32 @@ def _get_request_payload(request):
 	return request.POST
 
 
+def _close_stale_flight_sessions(now=None):
+	now = now or timezone.now()
+	cutoff = now - FLIGHT_SESSION_GAP
+	stale_sessions = FlightSession.objects.filter(
+		ended_at__isnull=True,
+		last_sample_at__isnull=False,
+		last_sample_at__lt=cutoff,
+	)
+
+	for session in stale_sessions:
+		session.close()
+		session.save(update_fields=["ended_at"])
+
+
+def _get_flight_session(timestamp):
+	active_session = FlightSession.objects.filter(ended_at__isnull=True).order_by("-started_at").first()
+	if active_session and active_session.last_sample_at:
+		if timestamp - active_session.last_sample_at <= FLIGHT_SESSION_GAP:
+			return active_session
+
+		active_session.close()
+		active_session.save(update_fields=["ended_at"])
+
+	return FlightSession.objects.create(started_at=timestamp, last_sample_at=timestamp)
+
+
 @login_required
 @require_GET
 def latest_flight_data_api(request):
@@ -72,25 +102,42 @@ def ingest_flight_data(request):
 			altitude=altitude,
 			timestamp=timestamp,
 		)
+		session = _get_flight_session(timestamp)
+		session.append_reading(reading)
+		session.save(update_fields=["log_text", "last_sample_at", "sample_count"])
 	except (TypeError, ValueError, json.JSONDecodeError) as exc:
 		return JsonResponse({"detail": str(exc)}, status=400)
 
 	return JsonResponse({"latest_reading": _serialize_flight_data(reading)}, status=201)
 
 
+@require_GET
+def flight_session_download(request, session_id):
+	flight_session = FlightSession.objects.filter(pk=session_id).first()
+	if flight_session is None:
+		return JsonResponse({"detail": "Flight session not found."}, status=404)
+
+	response = HttpResponse(flight_session.log_text or "", content_type="text/plain")
+	response["Content-Disposition"] = f'attachment; filename="{flight_session.download_filename()}"'
+	return response
+
+
 def flight_data_list(request):
+	_close_stale_flight_sessions()
 	flight_data = list(FlightData.objects.all())
 	for record in flight_data:
 		record.time_period_label = get_time_period(record.timestamp)
 		record.wind_speed_kmh = wind_speed_to_kmh(record.wind_speed)
 
 	conditions_summary = build_conditions_summary(flight_data)
+	flight_sessions = list(FlightSession.objects.all())
 
 	return render(
 		request,
 		"flight_monitoring/flight_logs.html",
 		{
 			"flight_data": flight_data,
+			"flight_sessions": flight_sessions,
 			"conditions_summary": conditions_summary,
 		},
 	)

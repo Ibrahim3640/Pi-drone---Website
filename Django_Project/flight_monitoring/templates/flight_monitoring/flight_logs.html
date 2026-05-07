@@ -64,43 +64,39 @@
         </section>
         <section class="panel">
             <p class="eyebrow">Recorded Logs</p>
-            <h2>Timestamped readings</h2>
-            <p>Each saved reading still appears below so you can review the exact conditions that built the pattern summaries.</p>
-            {% if flight_data %}
+            <h2>Flight sessions</h2>
+            <p>Each flight is grouped into a single downloadable text log so a test run appears as one record instead of dozens of sample rows.</p>
+            {% if flight_sessions %}
                 <table>
                     <thead>
                         <tr>
-                            <th>Timestamp</th>
-                            <th>Time of Day</th>
-                            <th>Wind Speed</th>
-                            <th>Humidity</th>
-                            <th>Altitude</th>
-                            <th>Safety Status</th>
+                            <th>Started</th>
+                            <th>Ended</th>
+                            <th>Samples</th>
+                            <th>Status</th>
+                            <th>Download</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for item in flight_data %}
+                        {% for item in flight_sessions %}
                             <tr>
-                                <td>{{ item.timestamp|date:"Y-m-d H:i:s" }}</td>
-                                <td>{{ item.time_period_label }}</td>
-                                <td>{{ item.wind_speed_kmh|floatformat:1 }} km/h <span class="table-subvalue">({{ item.wind_speed }} m/s)</span></td>
-                                <td>{{ item.humidity }}%</td>
-                                <td>{{ item.altitude }} m</td>
+                                <td>{{ item.started_at|date:"Y-m-d H:i:s" }}</td>
+                                <td>{% if item.ended_at %}{{ item.ended_at|date:"Y-m-d H:i:s" }}{% else %}In progress{% endif %}</td>
+                                <td>{{ item.sample_count }}</td>
                                 <td>
-                                    {% if item.safety_rating == "Safe" %}
-                                        <span class="badge badge--safe">Safe</span>
-                                    {% elif item.safety_rating == "Caution" %}
-                                        <span class="badge badge--caution">Caution</span>
+                                    {% if item.ended_at %}
+                                        <span class="badge badge--safe">Closed</span>
                                     {% else %}
-                                        <span class="badge badge--dangerous">Dangerous</span>
+                                        <span class="badge badge--caution">Active</span>
                                     {% endif %}
                                 </td>
+                                <td><a href="{% url 'flight_monitoring:flight_session_download' item.id %}">Download log</a></td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             {% else %}
-                <p class="empty-state">No flight logs are available yet.</p>
+                <p class="empty-state">No flight sessions are available yet.</p>
             {% endif %}
         </section>
     </main>

@@ -32,6 +32,14 @@ curl -X POST http://127.0.0.1:8000/api/flight-data/ingest/ \
 
 The dashboard polls `/api/flight-data/latest/` every few seconds so the latest values update without a manual refresh.
 
+## Flight history logs
+
+The flight history page now groups incoming samples into one flight session instead of showing every 5-second reading as a separate row.
+
+Each session stores a text log with timestamped sensor readings and exposes a download link on the history page.
+
+If the sensor stream pauses long enough, the current session is closed automatically and the next reading starts a new log.
+
 ## How the safety reading is predicted
 
 Each submitted reading is checked against simple threshold rules:
