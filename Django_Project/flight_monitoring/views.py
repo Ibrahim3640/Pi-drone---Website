@@ -79,8 +79,6 @@ def _get_flight_session(timestamp):
 
 	return FlightSession.objects.create(started_at=timestamp, last_sample_at=timestamp)
 
-
-@login_required
 @require_GET
 def latest_flight_data_api(request):
 	latest_reading = FlightData.objects.first()
